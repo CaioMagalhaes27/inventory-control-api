@@ -5,6 +5,8 @@ services:
     container_name: inventory-product-service
     ports:
       - "8081:8081"
+    volumes:
+      - ./services/product-service/data:/app/data
     restart: unless-stopped
 
   inventory-service:
@@ -13,4 +15,6 @@ services:
     container_name: inventory-inventory-service
     ports:
       - "8082:8082"
+    volumes:
+      - ./services/inventory-service/data:/app/data
     restart: unless-stopped
