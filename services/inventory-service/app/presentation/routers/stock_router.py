@@ -20,17 +20,17 @@ from app.application.use_cases.register_movement import RegisterMovementUseCase
 from app.domain.entities.movement_type import MovementType
 from app.domain.repositories.stock_item_repository import StockItemRepository
 from app.domain.repositories.stock_movement_repository import StockMovementRepository
-from app.infrastructure.repositories.in_memory_movement_repository import (
-    InMemoryStockMovementRepository,
+from app.infrastructure.repositories.sqlalchemy_stock_item_repository import (
+    SqlAlchemyStockItemRepository,
 )
-from app.infrastructure.repositories.in_memory_stock_item_repository import (
-    InMemoryStockItemRepository,
+from app.infrastructure.repositories.sqlalchemy_stock_movement_repository import (
+    SqlAlchemyStockMovementRepository,
 )
 
 router = APIRouter(prefix="/api/stock-items", tags=["stock-items"])
 
-_item_repository: StockItemRepository = InMemoryStockItemRepository()
-_movement_repository: StockMovementRepository = InMemoryStockMovementRepository()
+_item_repository: StockItemRepository = SqlAlchemyStockItemRepository()
+_movement_repository: StockMovementRepository = SqlAlchemyStockMovementRepository()
 
 
 def get_item_repository() -> StockItemRepository:
