@@ -2,11 +2,32 @@
 
 ## Plano de Docker
 
-Cada microsservico sera empacotado futuramente em sua propria imagem Docker, contendo a aplicacao FastAPI, suas dependencias Python e configuracoes necessarias para execucao isolada.
+Cada microsservico possui seu proprio `Dockerfile` usando `python:3.12-slim`. As imagens instalam as dependencias a partir do `requirements.txt` do respectivo servico e executam a aplicacao FastAPI com Uvicorn.
+
+- `services/product-service/Dockerfile`: executa `uvicorn app.main:app --host 0.0.0.0 --port 8081`.
+- `services/inventory-service/Dockerfile`: executa `uvicorn app.main:app --host 0.0.0.0 --port 8082`.
 
 ## Plano de Docker Compose
 
-O Docker Compose sera usado para subir todos os componentes do projeto em ambiente local, conectando os microsservicos e o frontend em uma unica configuracao.
+O Docker Compose sobe os microsservicos em containers separados e publica as portas planejadas no ambiente local.
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+Validacao local:
+
+```bash
+curl http://localhost:8081/api/products
+curl http://localhost:8082/api/stock-items
+```
+
+Para encerrar o ambiente:
+
+```bash
+docker compose down
+```
 
 ## Portas planejadas
 
@@ -16,4 +37,6 @@ O Docker Compose sera usado para subir todos os componentes do projeto em ambien
 
 ## Plano de deploy futuro
 
-O deploy futuro podera ser feito em uma plataforma com suporte a containers. A entrega final devera documentar o processo de build, configuracao das variaveis de ambiente, publicacao dos containers e validacao dos servicos em ambiente externo.
+O deploy futuro podera ser feito em uma plataforma com suporte a containers. O fluxo planejado e construir as imagens dos servicos, publicar em um registry, configurar variaveis de ambiente por ambiente e disponibilizar os containers em uma infraestrutura com suporte a Docker ou orquestracao equivalente.
+
+Antes da publicacao, o pipeline devera executar testes automatizados, build das imagens e validacao dos endpoints de saude e das rotas principais.
