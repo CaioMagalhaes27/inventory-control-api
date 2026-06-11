@@ -1,0 +1,27 @@
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
+from app.domain.exceptions.inventory_exceptions import DomainError
+
+
+def register_exception_handlers(app: FastAPI) -> None:
+    @app.exception_handler(DomainError)
+    async def handle_domain_error(_: Request, exc: DomainError) -> JSONResponse:
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"code": exc.code, "message": exc.message},
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def handle_validation_error(
+        _: Request, exc: RequestValidationError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=422,
+            content={
+                "code": "VALIDATION_ERROR",
+                "message": "Invalid request payload",
+                "details": exc.errors(),
+            },
+        )
