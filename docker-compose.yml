@@ -1,9 +1,16 @@
-# Docker Compose inicial da Fase 0.
-#
-# Os servicos serao adicionados em fases futuras do projeto.
-# Portas planejadas:
-# - product-service: 8081
-# - inventory-service: 8082
-# - frontend: 3000
-#
-# Nenhum container funcional deve ser definido nesta fase.
+services:
+  product-service:
+    build:
+      context: ./services/product-service
+    container_name: inventory-product-service
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
+  inventory-service:
+    build:
+      context: ./services/inventory-service
+    container_name: inventory-inventory-service
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
