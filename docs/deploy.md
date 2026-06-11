@@ -2,7 +2,15 @@
 
 ## Status
 
-O deploy final ainda e um plano a realizar. Nao ha link publico publicado nesta fase.
+O frontend foi publicado no Netlify e os dois microsservicos FastAPI foram publicados no Render.
+
+Links:
+
+- Frontend: <https://inventory-control-frontend.netlify.app>
+- Product Service: <https://inventory-control-api.onrender.com>
+- Inventory Service: <https://inventory-stock-service.onrender.com>
+
+O frontend publicado consome as APIs publicas do Render.
 
 ## Docker
 
@@ -51,6 +59,8 @@ No ambiente local com Docker Compose, os diretorios `data/` sao montados como vo
 
 Os arquivos `.db` sao ignorados pelo Git, pois representam dados locais de execucao.
 
+Em producao, os bancos SQLite sao gerados no ambiente de cada servico no Render.
+
 ## Frontend
 
 Para abrir o frontend estatico:
@@ -77,8 +87,8 @@ Funcionalidades principais:
 
 Para uma execucao local integrada com proxy para as APIs, o projeto tambem possui `frontend/serve.py`.
 
-## Plano de deploy futuro
+## Observacoes sobre deploy
 
-O plano final e publicar os microsservicos conteinerizados em uma plataforma com suporte a Docker. Antes da publicacao, o pipeline devera executar testes, build das imagens e validacao dos endpoints principais.
+O Render Free pode demorar alguns segundos para responder apos inatividade, pois o servico pode entrar em repouso e precisar iniciar novamente na primeira requisicao.
 
-Tambem sera necessario definir uma estrategia de persistencia para os bancos SQLite ou substituir por um banco gerenciado, conforme os requisitos do ambiente de deploy.
+Em evolucoes futuras, pode ser adotado um banco gerenciado ou uma estrategia de persistencia mais robusta, conforme os requisitos do ambiente de deploy.

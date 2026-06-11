@@ -141,4 +141,31 @@ Resumo atual:
 
 ## Deploy
 
-O deploy final ainda e um plano a realizar. A proposta e publicar os microsservicos conteinerizados em uma plataforma com suporte a Docker, configurando volumes ou armazenamento persistente para os bancos SQLite e validando os endpoints em ambiente externo.
+O frontend foi publicado no Netlify:
+
+- Frontend: <https://inventory-control-frontend.netlify.app>
+
+Os dois microsservicos FastAPI foram publicados no Render:
+
+- Product Service: <https://inventory-control-api.onrender.com>
+- Inventory Service: <https://inventory-stock-service.onrender.com>
+
+O frontend publicado consome as APIs publicas do Render. Como os servicos estao no plano gratuito do Render, a primeira requisicao apos um periodo de inatividade pode demorar alguns segundos para responder.
+
+Em producao, os bancos SQLite sao gerados no ambiente de cada servico.
+
+## Evidencias do deploy
+
+As imagens abaixo registram o frontend publicado no Netlify e os microsservicos publicados no Render, demonstrando que a aplicacao esta funcionando em ambiente de deploy.
+
+### Netlify
+
+![Deploy do frontend no Netlify 1](./assets/deploy_netlify1.png)
+![Deploy do frontend no Netlify 2](./assets/deploy_netlify2.png)
+![Deploy do frontend no Netlify 3](./assets/deploy_netlify3.png)
+![Deploy do frontend no Netlify 4](./assets/deploy_netlify4.png)
+
+### Render
+
+![Deploy dos microsservicos no Render 1](./assets/deploy_render.png)
+![Deploy dos microsservicos no Render 2](./assets/deploy_render2.png)
