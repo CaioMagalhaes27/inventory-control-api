@@ -14,37 +14,88 @@ Pequenos comercios perdem dinheiro por falta de controle sobre entradas e saidas
 
 A solucao proposta e uma aplicacao web composta por microsservicos para cadastro de produtos, controle de itens em estoque, registro de movimentacoes, alertas de estoque baixo e alertas de vencimento proximo.
 
-## Stack planejada
+## Stack
 
-- Python
+- Python 3.11+
 - FastAPI
 - Pydantic
+- Uvicorn
 - Pytest
-- Behave ou pytest-bdd
-- Docker
-- HTML, CSS e JavaScript puro
 
-## Microsservicos planejados
+## Microsservicos
 
-- product-service: responsavel pelo cadastro e consulta de produtos.
-- inventory-service: responsavel pelo controle de estoque, movimentacoes, estoque minimo e alertas.
+- `services/product-service`: cadastro e consulta de produtos. Porta `8081`.
+- `services/inventory-service`: estoque, movimentacoes, estoque minimo e vencimento. Porta `8082`.
 
-## Conceitos academicos demonstrados
+Cada servico segue arquitetura limpa em camadas:
 
-- Clean Code
-- SOLID
-- Design Patterns
-- TDD
-- BDD
-- Arquitetura Limpa
-- Microsservicos
-- Docker
-- Deploy
+```
+app/
+├── main.py
+├── domain/
+│   ├── entities/
+│   ├── repositories/
+│   └── exceptions/
+├── application/
+│   ├── use_cases/
+│   ├── schemas/
+│   ├── factories/
+│   └── mappers/
+├── infrastructure/
+│   └── repositories/
+└── presentation/
+    ├── routers/
+    └── exception_handlers/
+```
 
-## Execucao final planejada
+## Como executar
 
-Ao final do projeto, a aplicacao sera executada com Docker Compose, subindo os microsservicos FastAPI e o frontend em portas separadas:
+Cada servico tem seu proprio `requirements.txt`. Em terminais separados:
 
-- product-service: `8081`
-- inventory-service: `8082`
-- frontend: `3000`
+```bash
+# product-service
+cd services/product-service
+python -m venv .venv
+source .venv/Scripts/activate     # Windows Git Bash
+pip install -r requirements.txt
+uvicorn app.main:app --port 8081 --reload
+```
+
+```bash
+# inventory-service
+cd services/inventory-service
+python -m venv .venv
+source .venv/Scripts/activate
+pip install -r requirements.txt
+uvicorn app.main:app --port 8082 --reload
+```
+
+Saude:
+- `GET http://127.0.0.1:8081/health`
+- `GET http://127.0.0.1:8082/health`
+
+Documentacao OpenAPI: `/docs` em cada servico.
+
+## Testes
+
+```bash
+cd services/product-service && pytest
+cd services/inventory-service && pytest
+```
+
+Total atual: **27 testes passando** (12 em product-service, 15 em inventory-service).
+
+## Conceitos demonstrados
+
+- Clean Code e SOLID
+- Arquitetura Limpa (domain / application / infrastructure / presentation)
+- Design Patterns: Repository, Factory, Mapper, Strategy
+- TDD (testes de API com FastAPI TestClient)
+- Microsservicos isolados por dominio
+
+## Documentacao adicional
+
+- `docs/arquitetura.md` - arquitetura em camadas e patterns
+- `docs/testes.md` - estrategia e cobertura de testes
+- `docs/deploy.md` - notas de deploy
+- `docs/entrega.md` - notas de entrega
