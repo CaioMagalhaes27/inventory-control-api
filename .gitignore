@@ -40,3 +40,7 @@ Desktop.ini
 *.log
 *.bak
 *.swp
+
+# Local SQLite databases
+services/*/data/*.db
+services/*/data/*.db-*

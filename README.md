@@ -2,125 +2,137 @@
 
 Sistema de controle de estoque, validade e reposicao para pequenos comercios.
 
-## Descricao
-
-O projeto tem como objetivo construir uma aplicacao web baseada em microsservicos para apoiar pequenos mercados, mercearias, restaurantes e lanchonetes no controle de produtos, estoque, validade e reposicao.
-
 ## Problema escolhido
 
-Pequenos comercios perdem dinheiro por falta de controle sobre entradas e saidas de produtos, acompanhamento manual de estoque minimo e baixa visibilidade sobre itens proximos do vencimento.
+Pequenos mercados, mercearias, restaurantes e lanchonetes perdem dinheiro por falta de controle de estoque, produtos proximos do vencimento, estoque minimo mal acompanhado e registros manuais de entrada e saida.
 
-## Solucao proposta
+## Solucao
 
-A solucao proposta e uma aplicacao web composta por microsservicos para cadastro de produtos, controle de itens em estoque, registro de movimentacoes, alertas de estoque baixo e alertas de vencimento proximo.
+A solucao e uma aplicacao web com dois microsservicos:
+
+- `product-service`: cadastro, consulta, atualizacao e soft delete de produtos.
+- `inventory-service`: controle de itens de estoque, entradas, saidas, estoque baixo e vencimento proximo.
+
+O frontend em HTML/CSS/JS puro consome as APIs reais e apresenta dashboard, tabelas, formularios, alertas e status dos servicos.
 
 ## Stack
 
-- Python 3.11+
+- Python
 - FastAPI
 - Pydantic
-- Uvicorn
+- SQLAlchemy
+- SQLite
 - Pytest
+- Behave/Gherkin
+- Docker
+- HTML/CSS/JS puro
 
-## Microsservicos
+## Conceitos obrigatorios demonstrados
 
-- `services/product-service`: cadastro e consulta de produtos. Porta `8081`.
-- `services/inventory-service`: estoque, movimentacoes, estoque minimo e vencimento. Porta `8082`.
+- Clean Code
+- SOLID
+- Design Patterns
+- TDD
+- BDD
+- Arquitetura Limpa
+- Microsservicos
+- Docker
+- Deploy
 
-Cada servico segue arquitetura limpa em camadas:
+## Arquitetura
 
-```
-app/
-├── main.py
-├── domain/
-│   ├── entities/
-│   ├── repositories/
-│   └── exceptions/
-├── application/
-│   ├── use_cases/
-│   ├── schemas/
-│   ├── factories/
-│   └── mappers/
-├── infrastructure/
-│   └── repositories/
-└── presentation/
-    ├── routers/
-    └── exception_handlers/
-```
+Cada microsservico segue Arquitetura Limpa, separando responsabilidades em camadas:
 
-## Como executar
+- `domain`: entidades, contratos de repositorio e regras centrais de negocio.
+- `application`: casos de uso, schemas, factories e mappers.
+- `infrastructure`: banco SQLite, SQLAlchemy e implementacoes de repositorios.
+- `presentation`: rotas FastAPI e tratamento de erros HTTP.
 
-Cada servico tem seu proprio `requirements.txt`. Em terminais separados:
+Design Patterns usados:
 
-```bash
-# product-service
-cd services/product-service
-python -m venv .venv
-source .venv/Scripts/activate     # Windows Git Bash
-pip install -r requirements.txt
-uvicorn app.main:app --port 8081 --reload
-```
+- Repository
+- Factory
+- Mapper
+- Strategy
 
-```bash
-# inventory-service
-cd services/inventory-service
-python -m venv .venv
-source .venv/Scripts/activate
-pip install -r requirements.txt
-uvicorn app.main:app --port 8082 --reload
-```
+## Banco de dados
 
-Saude:
-- `GET http://127.0.0.1:8081/health`
-- `GET http://127.0.0.1:8082/health`
+Cada microsservico possui seu proprio banco SQLite:
 
-Documentacao OpenAPI: `/docs` em cada servico.
+- `services/product-service/data/products.db`
+- `services/inventory-service/data/inventory.db`
 
-## Como executar com Docker
+Os arquivos `.db` sao gerados em ambiente local e ignorados pelo Git.
 
-Build das imagens:
+## Execucao com Docker
 
 ```bash
 docker compose build
-```
-
-Subir os microsservicos:
-
-```bash
 docker compose up -d
 ```
+
+Servicos:
+
+- product-service: <http://localhost:8081>
+- inventory-service: <http://localhost:8082>
 
 Endpoints principais:
 
 - `GET http://localhost:8081/api/products`
 - `GET http://localhost:8082/api/stock-items`
 
-Parar os containers:
+Encerrar:
 
 ```bash
 docker compose down
 ```
 
+## Frontend
+
+Para abrir o frontend estatico:
+
+```bash
+cd frontend
+python -m http.server 3000
+```
+
+Acesse:
+
+```text
+http://localhost:3000
+```
+
+Funcionalidades principais:
+
+- Dashboard com cards de produtos, itens, estoque baixo e vencimento proximo.
+- Cadastro de produtos.
+- Cadastro de itens de estoque.
+- Registro de entrada e saida.
+- Tabelas de produtos e estoque.
+- Alertas de estoque baixo e validade.
+- Status visual dos servicos.
+
+Observacao: para integracao completa com as APIs usando a mesma origem, o projeto tambem possui `frontend/serve.py`, que serve o frontend e faz proxy para os backends.
+
 ## Testes
 
 ```bash
-cd services/product-service && pytest
-cd services/inventory-service && pytest
+cd services/product-service
+pytest
+python -m behave
 ```
 
-Total atual: **27 testes passando** (12 em product-service, 15 em inventory-service).
+```bash
+cd services/inventory-service
+pytest
+python -m behave
+```
 
-## Conceitos demonstrados
+Resumo atual:
 
-- Clean Code e SOLID
-- Arquitetura Limpa (domain / application / infrastructure / presentation)
-- Design Patterns: Repository, Factory, Mapper, Strategy
-- TDD (testes de API com FastAPI TestClient)
-- Microsservicos isolados por dominio
+- Testes unitarios/API com pytest: 27 no total.
+- Cenarios BDD com Behave/Gherkin: 12 no total.
 
-## Documentacao adicional
+## Deploy
 
-- `docs/arquitetura.md` - arquitetura em camadas e patterns
-- `docs/testes.md` - estrategia e cobertura de testes
-- `docs/deploy.md` - notas de deploy
-- `docs/entrega.md` - notas de entrega
+O deploy final ainda e um plano a realizar. A proposta e publicar os microsservicos conteinerizados em uma plataforma com suporte a Docker, configurando volumes ou armazenamento persistente para os bancos SQLite e validando os endpoints em ambiente externo.

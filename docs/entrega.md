@@ -1,27 +1,59 @@
 # Entrega
 
-## Descricao do problema
+## Problema escolhido
 
-Pequenos mercados, mercearias, restaurantes e lanchonetes frequentemente controlam estoque por planilhas, cadernos ou memoria dos funcionarios. Esse processo aumenta o risco de compras desnecessarias, falta de produtos importantes, perda de itens por vencimento e dificuldade para acompanhar entradas e saidas.
+Sistema de controle de estoque, validade e reposicao para pequenos comercios.
+
+Pequenos mercados, mercearias, restaurantes e lanchonetes podem perder dinheiro por falta de controle sobre quantidade em estoque, produtos proximos do vencimento, estoque minimo e registros manuais de entrada e saida.
 
 ## Publico-alvo
 
-O publico-alvo sao pequenos comercios que precisam de uma ferramenta simples para organizar produtos, estoque, validade e reposicao sem depender de sistemas complexos ou caros.
+O publico-alvo sao pequenos comercios que precisam organizar produtos, lotes, validade e reposicao sem depender de sistemas caros ou complexos.
 
-## Proposta da solucao
+## Solucao proposta
 
-A proposta e desenvolver uma aplicacao web com microsservicos para registrar produtos, controlar itens em estoque, acompanhar movimentacoes de entrada e saida e gerar alertas para estoque baixo ou vencimento proximo.
+A solucao e uma aplicacao web com dois microsservicos:
 
-## Funcionalidades planejadas
+- `product-service`: responsavel pelo cadastro e gerenciamento de produtos.
+- `inventory-service`: responsavel por itens de estoque, movimentacoes, estoque baixo e alertas de validade.
 
-- Cadastro e consulta de produtos.
-- Registro de itens de estoque.
-- Movimentacoes de entrada e saida.
-- Controle de estoque minimo.
+O frontend em HTML/CSS/JS puro permite operar o sistema pelo navegador, consumindo as APIs dos microsservicos.
+
+## Funcionalidades principais
+
+- Cadastro, listagem, atualizacao e soft delete de produtos.
+- Cadastro e listagem de itens de estoque.
+- Registro de entrada de estoque.
+- Registro de saida de estoque.
 - Alertas de estoque baixo.
 - Alertas de produtos proximos do vencimento.
-- Interface web simples em HTML, CSS e JavaScript puro.
+- Dashboard com indicadores operacionais.
+- Persistencia local com SQLite por microsservico.
 
-## Justificativa tecnica resumida
+## Stack
 
-O uso de Python com FastAPI permite criar APIs simples, organizadas e testaveis. A divisao em microsservicos ajuda a separar responsabilidades entre produtos e estoque. A aplicacao sera planejada com Arquitetura Limpa, SOLID, Design Patterns, TDD, BDD e Docker para demonstrar os conceitos obrigatorios da disciplina.
+- Python
+- FastAPI
+- Pydantic
+- SQLAlchemy
+- SQLite
+- Pytest
+- Behave/Gherkin
+- Docker
+- HTML/CSS/JS puro
+
+## Conceitos academicos demonstrados
+
+- Clean Code
+- SOLID
+- Design Patterns
+- TDD
+- BDD
+- Arquitetura Limpa
+- Microsservicos
+- Docker
+- Deploy
+
+## Justificativa tecnica
+
+Python com FastAPI permite criar APIs simples, testaveis e bem documentadas. A separacao em microsservicos divide responsabilidades entre produtos e estoque. A Arquitetura Limpa isola regras de negocio de detalhes de banco, HTTP e infraestrutura. SQLAlchemy com SQLite fornece persistencia local por servico, mantendo independencia entre os bancos.
