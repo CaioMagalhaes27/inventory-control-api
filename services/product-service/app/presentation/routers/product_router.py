@@ -14,13 +14,13 @@ from app.application.use_cases.get_product import GetProductUseCase
 from app.application.use_cases.list_products import ListProductsUseCase
 from app.application.use_cases.update_product import UpdateProductUseCase
 from app.domain.repositories.product_repository import ProductRepository
-from app.infrastructure.repositories.in_memory_product_repository import (
-    InMemoryProductRepository,
+from app.infrastructure.repositories.sqlalchemy_product_repository import (
+    SqlAlchemyProductRepository,
 )
 
 router = APIRouter(prefix="/api/products", tags=["products"])
 
-_repository: ProductRepository = InMemoryProductRepository()
+_repository: ProductRepository = SqlAlchemyProductRepository()
 
 
 def get_repository() -> ProductRepository:
