@@ -13,11 +13,21 @@ cd services/inventory-service && pytest -v
 
 ## Resultado atual
 
+### Testes unitarios (pytest)
+
 | Servico            | Testes | Status |
 |--------------------|--------|--------|
 | product-service    | 12     | passing |
 | inventory-service  | 15     | passing |
 | **Total**          | **27** | **passing** |
+
+### Cenarios BDD (behave + Gherkin)
+
+| Servico            | Cenarios | Steps | Status |
+|--------------------|----------|-------|--------|
+| product-service    | 6        | 29    | passing |
+| inventory-service  | 6        | 30    | passing |
+| **Total**          | **12**   | **59**| **passing** |
 
 ## product-service - cenarios cobertos
 
@@ -66,3 +76,38 @@ cd services/inventory-service && pytest -v
 ## TDD
 
 A cobertura acima foi escrita junto com a implementacao, exercitando o ciclo red -> green -> refactor para cada caso de uso (`CreateProduct`, `RegisterMovement`, etc.). As factories concentram a validacao para que os mesmos testes cubram tambem o fluxo de criacao direta de entidades.
+
+## BDD com behave
+
+Cada servico tem um diretorio `features/` na sua raiz com arquivos `.feature` em Gherkin (em ingles, por consistencia) e steps em Python sob `features/steps/`. O `environment.py` de cada servico reseta os repositorios in-memory e cria um `TestClient` novo antes de cada cenario, isolando estado.
+
+Comando:
+
+```bash
+cd services/product-service && behave
+cd services/inventory-service && behave
+```
+
+### product-service - cenarios BDD
+
+`services/product-service/features/products.feature`
+
+1. Create a valid product.
+2. Reject duplicate SKU.
+3. List products.
+4. Fetch a product that does not exist.
+5. Update an existing product.
+6. Soft delete a product.
+
+### inventory-service - cenarios BDD
+
+`services/inventory-service/features/stock.feature`
+
+1. Create a stock item.
+2. Register an entry movement.
+3. Register an exit movement.
+4. Prevent exit with insufficient stock.
+5. Detect low stock.
+6. Detect items close to expiration.
+
+Cada cenario fala com a API real via `TestClient` (httpx), reaproveitando o mesmo bootstrap usado pelos testes pytest. Isso garante que os steps Gherkin sao documentacao executavel do mesmo comportamento exercitado pelos testes unitarios.
