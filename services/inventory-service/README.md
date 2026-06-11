@@ -17,9 +17,18 @@ uvicorn app.main:app --port 8082 --reload
 ```
 
 ## Tests
+
+Unit + API tests:
 ```bash
 pytest
 ```
+
+BDD scenarios (behave + Gherkin):
+```bash
+behave
+```
+
+The `features/` folder contains the `.feature` files and step definitions used by `behave`.
 
 ## Endpoints
 | Method | Path | Description |
