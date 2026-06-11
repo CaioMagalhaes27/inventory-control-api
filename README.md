@@ -76,6 +76,31 @@ Saude:
 
 Documentacao OpenAPI: `/docs` em cada servico.
 
+## Como executar com Docker
+
+Build das imagens:
+
+```bash
+docker compose build
+```
+
+Subir os microsservicos:
+
+```bash
+docker compose up -d
+```
+
+Endpoints principais:
+
+- `GET http://localhost:8081/api/products`
+- `GET http://localhost:8082/api/stock-items`
+
+Parar os containers:
+
+```bash
+docker compose down
+```
+
 ## Testes
 
 ```bash
