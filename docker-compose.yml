@@ -4,7 +4,7 @@ services:
       context: ./services/product-service
     container_name: inventory-product-service
     ports:
-      - "8081:8081"
+      - "8081:8080"
     volumes:
       - ./services/product-service/data:/app/data
     restart: unless-stopped
@@ -14,7 +14,7 @@ services:
       context: ./services/inventory-service
     container_name: inventory-inventory-service
     ports:
-      - "8082:8082"
+      - "8082:8080"
     volumes:
       - ./services/inventory-service/data:/app/data
     restart: unless-stopped
