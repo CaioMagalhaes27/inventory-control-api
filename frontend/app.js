@@ -15,10 +15,16 @@ function getApiConfig() {
     window.location.hostname === '127.0.0.1';
 
   return {
-    PRODUCTS_BASE: isLocal
+    PRODUCT_SERVICE_BASE: isLocal
+      ? 'http://localhost:8081'
+      : 'https://inventory-control-api.onrender.com',
+    INVENTORY_SERVICE_BASE: isLocal
+      ? 'http://localhost:8082'
+      : 'https://inventory-stock-service.onrender.com',
+    PRODUCT_API_BASE: isLocal
       ? 'http://localhost:8081/api'
       : 'https://inventory-control-api.onrender.com/api',
-    STOCK_BASE: isLocal
+    INVENTORY_API_BASE: isLocal
       ? 'http://localhost:8082/api'
       : 'https://inventory-stock-service.onrender.com/api',
   };
@@ -78,7 +84,7 @@ let servicesOnline = false;
    ------------------------------------------------------------ */
 const api = {
   async getProducts() {
-    const data = await requestJson(`${CONFIG.PRODUCTS_BASE}/products`);
+    const data = await requestJson(`${CONFIG.PRODUCT_API_BASE}/products`);
     return data.map(mapProductFromApi);
   },
   async createProduct(payload) {
@@ -87,7 +93,7 @@ const api = {
       products.push(p);
       return clone(p);
     }
-    return mapProductFromApi(await requestJson(`${CONFIG.PRODUCTS_BASE}/products`, postJson(mapProductToApi(payload))));
+    return mapProductFromApi(await requestJson(`${CONFIG.PRODUCT_API_BASE}/products`, postJson(mapProductToApi(payload))));
   },
   async updateProduct(id, payload) {
     if (!servicesOnline) {
@@ -95,7 +101,7 @@ const api = {
       if (i > -1) products[i] = { ...products[i], ...payload };
       return clone(products[i]);
     }
-    return mapProductFromApi(await requestJson(`${CONFIG.PRODUCTS_BASE}/products/${id}`, postJson(mapProductToApi(payload), 'PUT')));
+    return mapProductFromApi(await requestJson(`${CONFIG.PRODUCT_API_BASE}/products/${id}`, postJson(mapProductToApi(payload), 'PUT')));
   },
   async deleteProduct(id) {
     if (!servicesOnline) {
@@ -103,12 +109,12 @@ const api = {
       stockItems = stockItems.filter(s => s.productId !== id);
       return true;
     }
-    await requestJson(`${CONFIG.PRODUCTS_BASE}/products/${id}`, { method: 'DELETE' }, false);
+    await requestJson(`${CONFIG.PRODUCT_API_BASE}/products/${id}`, { method: 'DELETE' }, false);
     return true;
   },
 
   async getStockItems() {
-    const data = await requestJson(`${CONFIG.STOCK_BASE}/stock-items`);
+    const data = await requestJson(`${CONFIG.INVENTORY_API_BASE}/stock-items`);
     return data.map(mapStockFromApi);
   },
   async createStockItem(payload) {
@@ -117,22 +123,22 @@ const api = {
       stockItems.push(s);
       return clone(s);
     }
-    return mapStockFromApi(await requestJson(`${CONFIG.STOCK_BASE}/stock-items`, postJson(mapStockToApi(payload))));
+    return mapStockFromApi(await requestJson(`${CONFIG.INVENTORY_API_BASE}/stock-items`, postJson(mapStockToApi(payload))));
   },
   async registerEntry(itemId, payload) {
     if (!servicesOnline) return applyMovement(itemId, 'entrada', payload);
-    return mapMovementFromApi(await requestJson(`${CONFIG.STOCK_BASE}/stock-items/${itemId}/entries`, postJson(mapMovementToApi(payload))));
+    return mapMovementFromApi(await requestJson(`${CONFIG.INVENTORY_API_BASE}/stock-items/${itemId}/entries`, postJson(mapMovementToApi(payload))));
   },
   async registerExit(itemId, payload) {
     if (!servicesOnline) return applyMovement(itemId, 'saida', payload);
-    return mapMovementFromApi(await requestJson(`${CONFIG.STOCK_BASE}/stock-items/${itemId}/exits`, postJson(mapMovementToApi(payload))));
+    return mapMovementFromApi(await requestJson(`${CONFIG.INVENTORY_API_BASE}/stock-items/${itemId}/exits`, postJson(mapMovementToApi(payload))));
   },
   async getLowStock() {
-    const data = await requestJson(`${CONFIG.STOCK_BASE}/stock-items/low-stock`);
+    const data = await requestJson(`${CONFIG.INVENTORY_API_BASE}/stock-items/low-stock`);
     return data.map(mapStockFromApi);
   },
   async getExpiring() {
-    const data = await requestJson(`${CONFIG.STOCK_BASE}/stock-items/expiring`);
+    const data = await requestJson(`${CONFIG.INVENTORY_API_BASE}/stock-items/expiring`);
     return data.map(mapStockFromApi);
   },
 };
@@ -660,9 +666,17 @@ function setApiStatus(online) {
   text.textContent = online ? 'Serviços online' : 'Serviços indisponíveis';
 }
 
+async function checkServicesHealth() {
+  await Promise.all([
+    requestJson(`${CONFIG.PRODUCT_SERVICE_BASE}/health`),
+    requestJson(`${CONFIG.INVENTORY_SERVICE_BASE}/health`),
+  ]);
+}
+
 async function loadData() {
   try {
-    const [apiProducts, apiStockItems] = await Promise.all([
+    const [, apiProducts, apiStockItems] = await Promise.all([
+      checkServicesHealth().then(() => true),
       api.getProducts(),
       api.getStockItems(),
     ]);
