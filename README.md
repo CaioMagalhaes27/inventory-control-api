@@ -112,6 +112,12 @@ Funcionalidades principais:
 - Alertas de estoque baixo e validade.
 - Status visual dos servicos.
 
+## Exemplo visual
+
+A imagem abaixo mostra um exemplo de como o sistema pode funcionar em um pequeno comercio real, como mercadinhos de bairro, ajudando no acompanhamento de produtos, estoque, validade e reposicao.
+
+![Exemplo do sistema funcionando para pequeno comercio](./assets/aplicação_exemplo.png)
+
 Observacao: para integracao completa com as APIs usando a mesma origem, o projeto tambem possui `frontend/serve.py`, que serve o frontend e faz proxy para os backends.
 
 ## Testes
