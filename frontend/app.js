@@ -9,9 +9,23 @@
 /* ------------------------------------------------------------
    CONFIGURAÇÃO / CONSTANTES
    ------------------------------------------------------------ */
+function getApiConfig() {
+  const isLocal =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+
+  return {
+    PRODUCTS_BASE: isLocal
+      ? 'http://localhost:8081/api'
+      : 'https://inventory-control-api.onrender.com/api',
+    STOCK_BASE: isLocal
+      ? 'http://localhost:8082/api'
+      : 'https://inventory-stock-service.onrender.com/api',
+  };
+}
+
 const CONFIG = {
-  PRODUCTS_BASE: '/api',
-  STOCK_BASE: '/api',
+  ...getApiConfig(),
   EXPIRY_WINDOW_DAYS: 30,    // janela de "vencimento próximo"
 };
 
